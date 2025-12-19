@@ -393,14 +393,12 @@ static inline void keyboardDrawButton(uint8_t index, uint8_t isPressed)
         }
         else
         {
-          strncpy(statusText, gcodeKey123[GKEY_CLEAR], sizeof(statusText) - 1);
-          statusText[sizeof(statusText) - 1] = '\0';
+          strncpy_no_pad(statusText, gcodeKey123[GKEY_CLEAR], sizeof(statusText));
         }
       }
       else  // if released key
       {
-        strncpy(statusText, gcodeKey123[GKEY_SEND], sizeof(statusText) - 1);
-        statusText[sizeof(statusText) - 1] = '\0';
+        strncpy_no_pad(statusText, gcodeKey123[GKEY_SEND], sizeof(statusText));
       }
 
       rectBtn = (GUI_RECT){editorKeyRect[GKEY_SEND].x0 + 3, editorKeyRect[GKEY_SEND].y0 + 3,
@@ -589,8 +587,7 @@ static inline void menuKeyboardView(void)
         {
           if (saveEnabled == true)  // avoid saving again a gcode called from gcode history table
           {
-            strncpy(keyboardData->gcodeTable[saveGcodeIndex], gcodeBuf, CMD_MAX_SIZE - 1);  // save gcode to history table
-            keyboardData->gcodeTable[saveGcodeIndex][CMD_MAX_SIZE - 1] = '\0';
+            strncpy_no_pad(keyboardData->gcodeTable[saveGcodeIndex], gcodeBuf, CMD_MAX_SIZE);  // save gcode to history table
             saveGcodeIndex = (saveGcodeIndex + 1) % MAX_GCODE_COUNT;     // move to next save index in the gcode history table
           }
 

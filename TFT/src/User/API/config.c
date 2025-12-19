@@ -608,7 +608,7 @@ static void parseConfigKey(uint16_t index)
         int bytelen = strlen(pchr) + 1;
 
         if (inLimit(utf8len, MIN_NAME_LENGTH, MAX_STRING_LENGTH) && inLimit(bytelen, MIN_NAME_LENGTH, MAX_GCODE_LENGTH))
-          strncpy(configStringsStore->marlin_title, pchr, MAX_GCODE_LENGTH - 1);
+          strncpy_no_pad(configStringsStore->marlin_title, pchr, MAX_GCODE_LENGTH - 1);
         break;
       }
 
@@ -793,14 +793,14 @@ static void parseConfigKey(uint16_t index)
       if (colon == NULL) break;  // malformed line, skip
       char pchr[LINE_MAX_CHAR];
 
-      strncpy(pchr, colon + 1, LINE_MAX_CHAR - 1);
+      strncpy_no_pad(pchr, colon + 1, LINE_MAX_CHAR - 1);
       pchr[LINE_MAX_CHAR - 1] = '\0';
 
       int utf8len = getUTF8Length((uint8_t *) pchr);
       int bytelen = strlen(pchr) + 1;
 
       if (inLimit(utf8len, MIN_NAME_LENGTH, MAX_STRING_LENGTH) && inLimit(bytelen, MIN_NAME_LENGTH, MAX_STRING_LENGTH))
-        strncpy(configPreheatStore->preheat_name[index - C_INDEX_PREHEAT_NAME_1], pchr, MAX_STRING_LENGTH - 1);
+        strncpy_no_pad(configPreheatStore->preheat_name[index - C_INDEX_PREHEAT_NAME_1], pchr, MAX_STRING_LENGTH - 1);
       break;
     }
 
@@ -963,7 +963,7 @@ static void parseConfigKey(uint16_t index)
       if (colon == NULL) break;  // malformed line, skip
       char pchr[LINE_MAX_CHAR];
 
-      strncpy(pchr, colon + 1, LINE_MAX_CHAR - 1);
+      strncpy_no_pad(pchr, colon + 1, LINE_MAX_CHAR - 1);
       pchr[LINE_MAX_CHAR - 1] = '\0';
 
       int utf8len = getUTF8Length((uint8_t *) pchr);
@@ -971,7 +971,7 @@ static void parseConfigKey(uint16_t index)
 
       if (inLimit(utf8len, MIN_NAME_LENGTH, MAX_GCODE_NAME_LENGTH) && inLimit(bytelen, MIN_NAME_LENGTH, MAX_GCODE_LENGTH))
       {
-        strncpy(configCustomGcodes->name[customcode_index++], pchr, MAX_GCODE_NAME_LENGTH - 1);
+        strncpy_no_pad(configCustomGcodes->name[customcode_index++], pchr, MAX_GCODE_NAME_LENGTH - 1);
         customcode_good[index - C_INDEX_CUSTOM_LABEL_1] = 1;  // set name was found ok
       }
       else
@@ -1001,14 +1001,14 @@ static void parseConfigKey(uint16_t index)
       int lineIndex = index - C_INDEX_CUSTOM_GCODE_1;  // actual gcode index in config file
       char pchr[LINE_MAX_CHAR];
 
-      strncpy(pchr, colon + 1, LINE_MAX_CHAR - 1);
+      strncpy_no_pad(pchr, colon + 1, LINE_MAX_CHAR - 1);
       pchr[LINE_MAX_CHAR - 1] = '\0';
 
       int len = strlen(pchr) + 1;
 
       // check if gcode length is ok and the name was ok
       if (inLimit(len, MIN_GCODE_LENGTH, MAX_GCODE_LENGTH) && (customcode_good[lineIndex] == 1))
-        strncpy(configCustomGcodes->gcode[customcode_index - 1], pchr, MAX_GCODE_LENGTH - 1);
+        strncpy_no_pad(configCustomGcodes->gcode[customcode_index - 1], pchr, MAX_GCODE_LENGTH - 1);
       else if (customcode_good[lineIndex] == 1)  // if name was ok but gcode is not ok then reduce count
         customcode_index--;
       break;
@@ -1031,7 +1031,7 @@ static void parseConfigKey(uint16_t index)
 
       if (inLimit(len, MIN_GCODE_LENGTH, MAX_GCODE_LENGTH))
       {
-        strncpy(configPrintGcodes->start_gcode, pchr, MAX_GCODE_LENGTH - 1);
+        strncpy_no_pad(configPrintGcodes->start_gcode, pchr, MAX_GCODE_LENGTH - 1);
         #ifdef CONFIG_DEBUG
           GUI_DispStringInRect(recterrortxt.x0, recterrortxt.y0 + (BYTE_HEIGHT * 2), recterrortxt.x1, recterrortxt.y1,
                                (uint8_t *) configPrintGcodes->start_gcode);
@@ -1051,7 +1051,7 @@ static void parseConfigKey(uint16_t index)
 
       if (inLimit(len, MIN_GCODE_LENGTH, MAX_GCODE_LENGTH))
       {
-        strncpy(configPrintGcodes->end_gcode, pchr, MAX_GCODE_LENGTH - 1);
+        strncpy_no_pad(configPrintGcodes->end_gcode, pchr, MAX_GCODE_LENGTH - 1);
         #ifdef CONFIG_DEBUG
           GUI_DispStringInRect(recterrortxt.x0, recterrortxt.y0 + (BYTE_HEIGHT * 2), recterrortxt.x1, recterrortxt.y1,
                                (uint8_t *) configPrintGcodes->end_gcode);
@@ -1071,7 +1071,7 @@ static void parseConfigKey(uint16_t index)
 
       if (inLimit(len, MIN_GCODE_LENGTH, MAX_GCODE_LENGTH))
       {
-        strncpy(configPrintGcodes->cancel_gcode, pchr, MAX_GCODE_LENGTH - 1);
+        strncpy_no_pad(configPrintGcodes->cancel_gcode, pchr, MAX_GCODE_LENGTH - 1);
         #ifdef CONFIG_DEBUG
           GUI_DispStringInRect(recterrortxt.x0, recterrortxt.y0 + (BYTE_HEIGHT * 2), recterrortxt.x1, recterrortxt.y1,
                                (uint8_t *) configPrintGcodes->cancel_gcode);
