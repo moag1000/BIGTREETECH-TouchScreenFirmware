@@ -389,16 +389,18 @@ static inline void keyboardDrawButton(uint8_t index, uint8_t isPressed)
         if (index < GKEY_CLEAR)
         {
           keyboardData->gcodeIndex = (keyboardData->gcodeIndex + MAX_GCODE_COUNT + (2 * (index == GKEY_NEXT)) - 1) % MAX_GCODE_COUNT;
-          sprintf(statusText, "%s %d/%d", gcodeKey123[index], keyboardData->gcodeIndex + 1, MAX_GCODE_COUNT);
+          snprintf(statusText, sizeof(statusText), "%s %d/%d", gcodeKey123[index], keyboardData->gcodeIndex + 1, MAX_GCODE_COUNT);
         }
         else
         {
-          strcpy(statusText, gcodeKey123[GKEY_CLEAR]);
+          strncpy(statusText, gcodeKey123[GKEY_CLEAR], sizeof(statusText) - 1);
+          statusText[sizeof(statusText) - 1] = '\0';
         }
       }
       else  // if released key
       {
-        strcpy(statusText, gcodeKey123[GKEY_SEND]);
+        strncpy(statusText, gcodeKey123[GKEY_SEND], sizeof(statusText) - 1);
+        statusText[sizeof(statusText) - 1] = '\0';
       }
 
       rectBtn = (GUI_RECT){editorKeyRect[GKEY_SEND].x0 + 3, editorKeyRect[GKEY_SEND].y0 + 3,
@@ -464,11 +466,12 @@ static inline void keyboardDrawButton(uint8_t index, uint8_t isPressed)
         if (index < GKEY_CLEAR)
         {
           keyboardData->gcodeIndex = (keyboardData->gcodeIndex + MAX_GCODE_COUNT + (2 * (index == GKEY_NEXT)) - 1) % MAX_GCODE_COUNT;
-          sprintf(statusText, "%s %d/%d", gcodeKey123[index], keyboardData->gcodeIndex + 1, MAX_GCODE_COUNT);
+          snprintf(statusText, sizeof(statusText), "%s %d/%d", gcodeKey123[index], keyboardData->gcodeIndex + 1, MAX_GCODE_COUNT);
         }
         else
         {
-          strcpy(statusText, gcodeKey123[GKEY_CLEAR]);
+          strncpy(statusText, gcodeKey123[GKEY_CLEAR], sizeof(statusText) - 1);
+          statusText[sizeof(statusText) - 1] = '\0';
         }
 
         fontColor = BAR_BG_COLOR;
@@ -476,7 +479,8 @@ static inline void keyboardDrawButton(uint8_t index, uint8_t isPressed)
       }
       else  // if released key
       {
-        strcpy(statusText, gcodeKey123[GKEY_SEND]);
+        strncpy(statusText, gcodeKey123[GKEY_SEND], sizeof(statusText) - 1);
+        statusText[sizeof(statusText) - 1] = '\0';
 
         fontColor = BAR_FONT_COLOR;
         bgColor = BAR_BG_COLOR;
@@ -585,11 +589,13 @@ static inline void menuKeyboardView(void)
         {
           if (saveEnabled == true)  // avoid saving again a gcode called from gcode history table
           {
-            strcpy(keyboardData->gcodeTable[saveGcodeIndex], gcodeBuf);  // save gcode to history table
+            strncpy(keyboardData->gcodeTable[saveGcodeIndex], gcodeBuf, CMD_MAX_SIZE - 1);  // save gcode to history table
+            keyboardData->gcodeTable[saveGcodeIndex][CMD_MAX_SIZE - 1] = '\0';
             saveGcodeIndex = (saveGcodeIndex + 1) % MAX_GCODE_COUNT;     // move to next save index in the gcode history table
           }
 
-          strcpy(&gcodeBuf[nowIndex], "\n");
+          gcodeBuf[nowIndex] = '\n';
+          gcodeBuf[nowIndex + 1] = '\0';
           handleCmd(gcodeBuf);
         }
 
@@ -651,6 +657,9 @@ static inline void menuKeyboardView(void)
 static inline void saveGcodeTerminalCache(const char * str, uint16_t strLen)
 {
   uint16_t len = 0;
+
+  if (strLen == 0 || strLen > terminalData->bufSize)  // skip if empty or too large for buffer
+    return;
 
   if ((terminalData->bufTail + strLen) < terminalData->bufSize)
   {
@@ -800,7 +809,7 @@ static inline void terminalDrawPageNumber(void)
 {
   char tempstr[10];
 
-  sprintf(tempstr, "%d/%d", (terminalData->pageCount + 1) - terminalData->pageIndex, terminalData->pageCount + 1);
+  snprintf(tempstr, sizeof(tempstr), "%d/%d", (terminalData->pageCount + 1) - terminalData->pageIndex, terminalData->pageCount + 1);
 
   drawStandardValue(&terminalPageRect, VALUE_STRING, &tempstr, FONT_SIZE_LARGE, BAR_FONT_COLOR, BAR_BG_COLOR, 1, true);
 }

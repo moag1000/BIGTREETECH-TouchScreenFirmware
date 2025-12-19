@@ -56,9 +56,9 @@ static const MENUITEMS statusItems = {
       {ICON_MAINMENU,                LABEL_MAINMENU},
     #else
       {ICON_MAINMENU,                LABEL_MAINMENU},
-      {ICON_NULL,                    LABEL_NULL},
+      {ICON_STOP,                    LABEL_EMERGENCYSTOP},  // Emergency Stop for quick access
     #endif
-    {ICON_NULL,                    LABEL_NULL},
+    {ICON_STOP,                    LABEL_EMERGENCYSTOP},  // Emergency Stop for quick access
     {ICON_PRINT,                   LABEL_PRINT},
   }
 };
@@ -356,6 +356,16 @@ void menuStatus(void)
 
       case KEY_MAINMENU:
         OPEN_MENU(menuMain);
+        break;
+
+      #ifndef TFT70_V3_0
+        case KEY_ICON_5:  // Emergency Stop (non-TFT70)
+          sendEmergencyCmd("M112\n");
+          break;
+      #endif
+
+      case KEY_ICON_6:  // Emergency Stop
+        sendEmergencyCmd("M112\n");
         break;
 
       case KEY_ICON_7:

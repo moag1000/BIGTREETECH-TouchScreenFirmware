@@ -3,14 +3,14 @@
 
 // config.ini Parameter Settings - Screen Settings and Feature Settings
 #define STRING_LANGUAGE               "Deutsch"
-#define STRING_COMMAND_CHECKSUM       "Command checksum"
+#define STRING_COMMAND_CHECKSUM       "Befehlsprüfsumme"
 #define STRING_ADVANCED_OK            "Advanced OK"
 #define STRING_TX_DELAY               "TX delay"
 #define STRING_TX_PREFETCH            "TX prefetch"
 #define STRING_EMULATED_M600          "Emuliere M600"
 #define STRING_EMULATED_M109_M190     "Emuliere M109 / M190"
-#define STRING_EVENT_LED              "Event LED"
-#define STRING_FILE_COMMENT_PARSING   "File comment parsing"
+#define STRING_EVENT_LED              "Ereignis-LED"
+#define STRING_FILE_COMMENT_PARSING   "Dateikommentare auswerten"
 #define STRING_ROTATED_UI             "UI drehen"
 #define STRING_ACK_NOTIFICATION       "ACK - Stil"
 #define STRING_FILES_SORT_BY          "Sortiere Dateien nach"

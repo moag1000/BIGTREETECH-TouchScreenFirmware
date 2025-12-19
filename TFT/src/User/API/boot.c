@@ -2,7 +2,7 @@
 #include "includes.h"
 
 #define STR_PATH_JOIN                         "%s/%s"
-#define GET_FULL_PATH(buf, rootDir, filepath) sprintf(buf, STR_PATH_JOIN, rootDir, filepath)
+#define GET_FULL_PATH(buf, rootDir, filepath) snprintf(buf, sizeof(buf), STR_PATH_JOIN, rootDir, filepath)
 #define PADDING                               10
 
 typedef enum
@@ -160,7 +160,7 @@ static void dispIconFail(char * lbl, BMPUPDATE_STAT bmpState)
       break;
   }
 
-  sprintf(errorTxt, "Error: %s", statTxt);
+  snprintf(errorTxt, sizeof(errorTxt), "Error: %s", statTxt);
   GUI_DispString(labelFailedRect.x0, labelFailedRect.y0 + BYTE_HEIGHT + 2, (uint8_t *) errorTxt);
   GUI_RestoreColorDefault();
   Delay_ms(1000);  // give some time to the user to read failed icon name.
@@ -199,7 +199,7 @@ static inline bool updateIcon(char * rootDir)
   {
     GUI_POINT lastSize = bmpSize;
 
-    sprintf(curBmpPath, "%s%s/%s.bmp", rootDir, BMP_UPDATE_DIR, iconBmpName[i]);
+    snprintf(curBmpPath, sizeof(curBmpPath), "%s%s/%s.bmp", rootDir, BMP_UPDATE_DIR, iconBmpName[i]);
     bmpState = bmpDecode(curBmpPath, ICON_ADDR(i));
 
     GUI_ClearPrect(&labelUpdateRect);
@@ -218,7 +218,7 @@ static inline bool updateIcon(char * rootDir)
     }
 
     // display icon update progress
-    sprintf(tempStr, "Updated: %d | Not Updated: %d", found, notFound);
+    snprintf(tempStr, sizeof(tempStr), "Updated: %d | Not Updated: %d", found, notFound);
     GUI_DispString(statUpdateRect.x0, statUpdateRect.y0, (uint8_t *) tempStr);
   }
 

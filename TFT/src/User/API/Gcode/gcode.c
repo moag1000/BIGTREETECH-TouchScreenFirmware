@@ -41,10 +41,21 @@ static void resetRequestCommandInfo(
 {
   clearRequestCommandInfo();  // release requestCommandInfo.cmd_rev_buf before allocating a new one
 
+  // try to allocate memory with retry mechanism instead of blocking forever
+  uint8_t retries = 10;
   requestCommandInfo.cmd_rev_buf = malloc(CMD_MAX_REV);
 
-  while (!requestCommandInfo.cmd_rev_buf)  // if malloc failed, block the TFT
+  while (!requestCommandInfo.cmd_rev_buf && retries > 0)
   {
+    Delay_ms(100);  // wait a bit before retry
+    requestCommandInfo.cmd_rev_buf = malloc(CMD_MAX_REV);
+    retries--;
+  }
+
+  if (!requestCommandInfo.cmd_rev_buf)  // if malloc still failed after retries, abort gracefully
+  {
+    abortRequestCommandInfo();
+    return;
   }
 
   memset(requestCommandInfo.cmd_rev_buf, 0, CMD_MAX_REV);

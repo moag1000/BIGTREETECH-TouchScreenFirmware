@@ -13,20 +13,30 @@ static bool loadRequested = false;
 
 static void showNewESteps(const float measured_length, const float old_esteps, float * new_esteps)
 {
-  char tempstr[20];
+  char tempstr[40];
 
-  // first we calculate the new E-step value
-  *new_esteps = (EXTRUDE_LEN * old_esteps) / (EXTRUDE_LEN - (measured_length - REMAINING_LEN));
+  // calculate the denominator and check for division by zero
+  float extruded_length = EXTRUDE_LEN - (measured_length - REMAINING_LEN);
+
+  // prevent division by zero (would occur if measured_length equals EXTRUDE_LEN + REMAINING_LEN)
+  if (extruded_length < 0.1f)
+  {
+    *new_esteps = old_esteps;  // keep old value if calculation would be invalid
+  }
+  else
+  {
+    *new_esteps = (EXTRUDE_LEN * old_esteps) / extruded_length;
+  }
 
   GUI_DispString(exhibitRect.x0, exhibitRect.y0, (uint8_t *) textSelect(LABEL_TUNE_EXT_MEASURED));
 
-  sprintf(tempstr, "  %0.2fmm  ", measured_length);
+  snprintf(tempstr, sizeof(tempstr), "  %0.2fmm  ", measured_length);
   GUI_DispStringInPrect(&exhibitRect, (uint8_t *) tempstr);
 
-  sprintf(tempstr, textSelect(LABEL_TUNE_EXT_OLD_ESTEP), old_esteps);
+  snprintf(tempstr, sizeof(tempstr), textSelect(LABEL_TUNE_EXT_OLD_ESTEP), old_esteps);
   GUI_DispString(exhibitRect.x0, exhibitRect.y1 - BYTE_HEIGHT, (uint8_t *) tempstr);
 
-  sprintf(tempstr, textSelect(LABEL_TUNE_EXT_NEW_ESTEP), *new_esteps);
+  snprintf(tempstr, sizeof(tempstr), textSelect(LABEL_TUNE_EXT_NEW_ESTEP), *new_esteps);
   GUI_DispString(exhibitRect.x0, exhibitRect.y1, (uint8_t *) tempstr);
 }
 

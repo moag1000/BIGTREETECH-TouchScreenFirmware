@@ -121,13 +121,13 @@ void menuInfo(void)
   GUI_DispStringInPrectEOL(&version[1], (uint8_t *) machine_type);
   GUI_DispStringInPrectEOL(&version[2], (uint8_t *) hardware);
 
-  sprintf(buf, "V"STRINGIFY(SOFTWARE_VERSION) " " __DATE__ " in %dMhz", mcuClocks.rccClocks.SYSCLK_Frequency / 1000000);
+  snprintf(buf, sizeof(buf), "V"STRINGIFY(SOFTWARE_VERSION) " " __DATE__ " in %dMhz", mcuClocks.rccClocks.SYSCLK_Frequency / 1000000);
   GUI_DispStringInPrectEOL(&version[3], (uint8_t *) buf);
 
   // spi flash info
   float usedMB = (float)(FLASH_USED) / 1048576;
 
-  sprintf(buf, "Used %.2f%% (%.2fMB/%uMB)", flashUsedPercentage(), usedMB, (W25Qxx_ReadCapacity() / 1048576));
+  snprintf(buf, sizeof(buf), "Used %.2f%% (%.2fMB/%uMB)", flashUsedPercentage(), usedMB, (W25Qxx_ReadCapacity() / 1048576));
   GUI_DispStringInPrectEOL(&version[4], (uint8_t *) buf);
 
   if (infoMachineSettings.firmwareType == FW_REPRAPFW)

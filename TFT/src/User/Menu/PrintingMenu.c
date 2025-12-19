@@ -444,36 +444,42 @@ void printSummaryPopup(void)
 {
   char showInfo[300];
   char tempstr[60];
+  size_t remaining;
 
   time_2_string(showInfo, textSelect(LABEL_PRINT_TIME), infoPrintSummary.time);
 
   if (isAborted() == true)
   {
-    sprintf(tempstr, "\n\n%s", textSelect(LABEL_PROCESS_ABORTED));
-    strcat(showInfo, tempstr);
+    snprintf(tempstr, sizeof(tempstr), "\n\n%s", textSelect(LABEL_PROCESS_ABORTED));
+    remaining = sizeof(showInfo) - strlen(showInfo) - 1;
+    strncat(showInfo, tempstr, remaining);
   }
   else if (infoPrintSummary.length + infoPrintSummary.weight + infoPrintSummary.cost == 0)  // all equals 0
   {
-    strcat(showInfo, textSelect(LABEL_NO_FILAMENT_STATS));
+    remaining = sizeof(showInfo) - strlen(showInfo) - 1;
+    strncat(showInfo, textSelect(LABEL_NO_FILAMENT_STATS), remaining);
   }
   else
   {
     if (infoPrintSummary.length > 0)
     {
-      sprintf(tempstr, textSelect(LABEL_FILAMENT_LENGTH), infoPrintSummary.length);
-      strcat(showInfo, tempstr);
+      snprintf(tempstr, sizeof(tempstr), textSelect(LABEL_FILAMENT_LENGTH), infoPrintSummary.length);
+      remaining = sizeof(showInfo) - strlen(showInfo) - 1;
+      strncat(showInfo, tempstr, remaining);
     }
 
     if (infoPrintSummary.weight > 0)
     {
-      sprintf(tempstr, textSelect(LABEL_FILAMENT_WEIGHT), infoPrintSummary.weight);
-      strcat(showInfo, tempstr);
+      snprintf(tempstr, sizeof(tempstr), textSelect(LABEL_FILAMENT_WEIGHT), infoPrintSummary.weight);
+      remaining = sizeof(showInfo) - strlen(showInfo) - 1;
+      strncat(showInfo, tempstr, remaining);
     }
 
     if (infoPrintSummary.cost > 0)
     {
-      sprintf(tempstr, textSelect(LABEL_FILAMENT_COST), infoPrintSummary.cost);
-      strcat(showInfo, tempstr);
+      snprintf(tempstr, sizeof(tempstr), textSelect(LABEL_FILAMENT_COST), infoPrintSummary.cost);
+      remaining = sizeof(showInfo) - strlen(showInfo) - 1;
+      strncat(showInfo, tempstr, remaining);
     }
   }
 

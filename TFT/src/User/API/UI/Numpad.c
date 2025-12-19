@@ -226,6 +226,8 @@ double numPadFloat(const char * title, double param_val, double reset_val, bool 
   if (title == NULL)
   {
     numTitle = malloc(FLOAT_BUF_LENGTH + 1);  // "+1" -> make room for terminal char '\0'
+    if (numTitle == NULL)
+      return param_val;  // return original value if malloc fails
     memcpy(numTitle, parameterBuf, bufIndex + 1);
   }
 
@@ -409,6 +411,8 @@ int32_t numPadInt(const char * title, int32_t param_val, int32_t reset_val, bool
   if (title == NULL)
   {
     numTitle = malloc(INT_BUF_LENGTH + 1);  // "+1" -> make room for terminal char '\0'
+    if (numTitle == NULL)
+      return param_val;  // return original value if malloc fails
     memcpy(numTitle, parameterBuf, len + 1);
   }
 

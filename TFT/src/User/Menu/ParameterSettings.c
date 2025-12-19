@@ -154,11 +154,19 @@ static void loadElements(LISTITEM * parameterMainItem, uint16_t index, uint8_t i
   }
 }
 
+// Maximum number of elements that can be edited at once (prevents stack overflow from VLA)
+#define MAX_PARAM_ELEMENTS 16
+
 // show menu for selected parameter type
 static void menuShowParameter(void)
 {
   uint8_t enabledElementCount = getEnabledElementCount(curParameter);
-  float oldval[enabledElementCount];
+
+  // safety check to prevent stack overflow from VLA
+  if (enabledElementCount > MAX_PARAM_ELEMENTS)
+    enabledElementCount = MAX_PARAM_ELEMENTS;
+
+  float oldval[MAX_PARAM_ELEMENTS];  // fixed size array instead of VLA
   uint16_t curIndex = KEY_IDLE;
 
   infoParametersRefreshBackup();

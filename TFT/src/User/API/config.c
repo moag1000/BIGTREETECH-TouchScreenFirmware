@@ -601,12 +601,14 @@ static void parseConfigKey(uint16_t index)
 
       case C_INDEX_MARLIN_TITLE:
       {
-        char * pchr = strchr(cur_line, ':') + 1;
+        char * colon = strchr(cur_line, ':');
+        if (colon == NULL) break;  // malformed line, skip
+        char * pchr = colon + 1;
         int utf8len = getUTF8Length((uint8_t *) pchr);
         int bytelen = strlen(pchr) + 1;
 
         if (inLimit(utf8len, MIN_NAME_LENGTH, MAX_STRING_LENGTH) && inLimit(bytelen, MIN_NAME_LENGTH, MAX_GCODE_LENGTH))
-          strcpy(configStringsStore->marlin_title, pchr);
+          strncpy(configStringsStore->marlin_title, pchr, MAX_GCODE_LENGTH - 1);
         break;
       }
 
@@ -787,15 +789,18 @@ static void parseConfigKey(uint16_t index)
     case C_INDEX_PREHEAT_NAME_5:
     case C_INDEX_PREHEAT_NAME_6:
     {
+      char * colon = strchr(cur_line, ':');
+      if (colon == NULL) break;  // malformed line, skip
       char pchr[LINE_MAX_CHAR];
 
-      strcpy(pchr, strchr(cur_line, ':') + 1);
+      strncpy(pchr, colon + 1, LINE_MAX_CHAR - 1);
+      pchr[LINE_MAX_CHAR - 1] = '\0';
 
       int utf8len = getUTF8Length((uint8_t *) pchr);
       int bytelen = strlen(pchr) + 1;
 
       if (inLimit(utf8len, MIN_NAME_LENGTH, MAX_STRING_LENGTH) && inLimit(bytelen, MIN_NAME_LENGTH, MAX_STRING_LENGTH))
-        strcpy(configPreheatStore->preheat_name[index - C_INDEX_PREHEAT_NAME_1], pchr);
+        strncpy(configPreheatStore->preheat_name[index - C_INDEX_PREHEAT_NAME_1], pchr, MAX_STRING_LENGTH - 1);
       break;
     }
 
@@ -954,16 +959,19 @@ static void parseConfigKey(uint16_t index)
     case C_INDEX_CUSTOM_LABEL_14:
     case C_INDEX_CUSTOM_LABEL_15:
     {
+      char * colon = strchr(cur_line, ':');
+      if (colon == NULL) break;  // malformed line, skip
       char pchr[LINE_MAX_CHAR];
 
-      strcpy(pchr, strchr(cur_line, ':') + 1);
+      strncpy(pchr, colon + 1, LINE_MAX_CHAR - 1);
+      pchr[LINE_MAX_CHAR - 1] = '\0';
 
       int utf8len = getUTF8Length((uint8_t *) pchr);
       int bytelen = strlen(pchr) + 1;
 
       if (inLimit(utf8len, MIN_NAME_LENGTH, MAX_GCODE_NAME_LENGTH) && inLimit(bytelen, MIN_NAME_LENGTH, MAX_GCODE_LENGTH))
       {
-        strcpy(configCustomGcodes->name[customcode_index++], pchr);
+        strncpy(configCustomGcodes->name[customcode_index++], pchr, MAX_GCODE_NAME_LENGTH - 1);
         customcode_good[index - C_INDEX_CUSTOM_LABEL_1] = 1;  // set name was found ok
       }
       else
@@ -988,16 +996,19 @@ static void parseConfigKey(uint16_t index)
     case C_INDEX_CUSTOM_GCODE_14:
     case C_INDEX_CUSTOM_GCODE_15:
     {
+      char * colon = strchr(cur_line, ':');
+      if (colon == NULL) break;  // malformed line, skip
       int lineIndex = index - C_INDEX_CUSTOM_GCODE_1;  // actual gcode index in config file
       char pchr[LINE_MAX_CHAR];
 
-      strcpy(pchr, strchr(cur_line, ':') + 1);
+      strncpy(pchr, colon + 1, LINE_MAX_CHAR - 1);
+      pchr[LINE_MAX_CHAR - 1] = '\0';
 
       int len = strlen(pchr) + 1;
 
       // check if gcode length is ok and the name was ok
       if (inLimit(len, MIN_GCODE_LENGTH, MAX_GCODE_LENGTH) && (customcode_good[lineIndex] == 1))
-        strcpy(configCustomGcodes->gcode[customcode_index - 1], pchr);
+        strncpy(configCustomGcodes->gcode[customcode_index - 1], pchr, MAX_GCODE_LENGTH - 1);
       else if (customcode_good[lineIndex] == 1)  // if name was ok but gcode is not ok then reduce count
         customcode_index--;
       break;
@@ -1013,12 +1024,14 @@ static void parseConfigKey(uint16_t index)
 
     case C_INDEX_START_GCODE:
     {
-      char * pchr = strchr(cur_line, ':') + 1;
+      char * colon = strchr(cur_line, ':');
+      if (colon == NULL) break;  // malformed line, skip
+      char * pchr = colon + 1;
       int len = strlen(pchr);
 
       if (inLimit(len, MIN_GCODE_LENGTH, MAX_GCODE_LENGTH))
       {
-        strcpy(configPrintGcodes->start_gcode, pchr);
+        strncpy(configPrintGcodes->start_gcode, pchr, MAX_GCODE_LENGTH - 1);
         #ifdef CONFIG_DEBUG
           GUI_DispStringInRect(recterrortxt.x0, recterrortxt.y0 + (BYTE_HEIGHT * 2), recterrortxt.x1, recterrortxt.y1,
                                (uint8_t *) configPrintGcodes->start_gcode);
@@ -1031,12 +1044,14 @@ static void parseConfigKey(uint16_t index)
 
     case C_INDEX_END_GCODE:
     {
-      char * pchr = strchr(cur_line, ':') + 1;
+      char * colon = strchr(cur_line, ':');
+      if (colon == NULL) break;  // malformed line, skip
+      char * pchr = colon + 1;
       int len = strlen(pchr);
 
       if (inLimit(len, MIN_GCODE_LENGTH, MAX_GCODE_LENGTH))
       {
-        strcpy(configPrintGcodes->end_gcode, pchr);
+        strncpy(configPrintGcodes->end_gcode, pchr, MAX_GCODE_LENGTH - 1);
         #ifdef CONFIG_DEBUG
           GUI_DispStringInRect(recterrortxt.x0, recterrortxt.y0 + (BYTE_HEIGHT * 2), recterrortxt.x1, recterrortxt.y1,
                                (uint8_t *) configPrintGcodes->end_gcode);
@@ -1049,12 +1064,14 @@ static void parseConfigKey(uint16_t index)
 
     case C_INDEX_CANCEL_GCODE:
     {
-      char * pchr = strchr(cur_line, ':') + 1;
+      char * colon = strchr(cur_line, ':');
+      if (colon == NULL) break;  // malformed line, skip
+      char * pchr = colon + 1;
       int len = strlen(pchr);
 
       if (inLimit(len, MIN_GCODE_LENGTH, MAX_GCODE_LENGTH))
       {
-        strcpy(configPrintGcodes->cancel_gcode, pchr);
+        strncpy(configPrintGcodes->cancel_gcode, pchr, MAX_GCODE_LENGTH - 1);
         #ifdef CONFIG_DEBUG
           GUI_DispStringInRect(recterrortxt.x0, recterrortxt.y0 + (BYTE_HEIGHT * 2), recterrortxt.x1, recterrortxt.y1,
                                (uint8_t *) configPrintGcodes->cancel_gcode);
@@ -1100,8 +1117,11 @@ static void parseLangLine(void)
       PRINTDEBUG("\n");
       PRINTDEBUG((char *) lang_key_list[i]);
 
+      char * colon = strchr(cur_line, ':');
+      if (colon == NULL) return;  // malformed line, skip
+
       uint32_t key_addr = LANGUAGE_ADDR + (MAX_LANG_LABEL_LENGTH * i);
-      uint8_t * pchr = (uint8_t *) strchr(cur_line, ':') + 1;
+      uint8_t * pchr = (uint8_t *) (colon + 1);
       int bytelen = strlen((char *) pchr);
 
       if (inLimit(bytelen, 1, MAX_LANG_LABEL_LENGTH))
@@ -1111,7 +1131,7 @@ static void parseLangLine(void)
         W25Qxx_WritePage(pchr, key_addr, MAX_LANG_LABEL_LENGTH);
         W25Qxx_ReadBuffer((uint8_t *) &check, key_addr, MAX_LANG_LABEL_LENGTH);
 
-        if (strcmp(strchr(cur_line, ':') + 1, check) != 0)
+        if (strcmp(colon + 1, check) != 0)
           showError(CSTAT_SPI_WRITE_FAIL);
       }
       else

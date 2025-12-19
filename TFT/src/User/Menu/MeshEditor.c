@@ -450,7 +450,13 @@ static uint16_t mapRGBdata(const uint16_t * rgbStart, const int16_t * rgbDelta, 
 static uint16_t meshGetRGBColor(const float value)
 {
   if (meshData->valueDelta == 0)
-    return (meshData->rStart << 11) | (meshData->gStart << 5) | (meshData->bStart);
+  {
+    // flat surface: use midpoint color (average of min and max colors) for better visibility
+    uint16_t r = (meshData->rStart + meshData->rEnd) / 2;
+    uint16_t g = (meshData->gStart + meshData->gEnd) / 2;
+    uint16_t b = (meshData->bStart + meshData->bEnd) / 2;
+    return (r << 11) | (g << 5) | (b);
+  }
 
   float valueDiff = value - meshData->valueMin;
   uint16_t r = mapRGBdata(&meshData->rStart, &meshData->rDelta, &valueDiff, &meshData->valueDelta);

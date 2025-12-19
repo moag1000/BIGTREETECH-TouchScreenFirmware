@@ -113,7 +113,14 @@ bool scanPrintFilesGcodeFs(void)
   }
 
   char * ret = request_M20();             // retrieve file list
+  if (ret == NULL) return false;          // request failed
+
   char * data = malloc(strlen(ret) + 1);
+  if (data == NULL)                       // malloc failed
+  {
+    clearRequestCommandInfo();
+    return false;
+  }
   strcpy(data, ret);                      // copy file list in "data"
   clearRequestCommandInfo();              // free the buffer allocated by M20 (including "ret")
 

@@ -105,26 +105,31 @@ void loopScreenShot(void)
       return;
 
     char screenShotFileName[FF_LFN_BUF] = "ScreenShot";
+    size_t remaining;
 
     if (!f_dir_exists(screenShotFileName))
       f_mkdir(screenShotFileName);
 
-    strcat(screenShotFileName, "/");
+    remaining = sizeof(screenShotFileName) - strlen(screenShotFileName) - 1;
+    strncat(screenShotFileName, "/", remaining);
 
     uint16_t i = strlen(screenShotFileName);
 
     switch (getMenuType())
     {
       case MENU_TYPE_ICON:
-        strcat(screenShotFileName, labelGetAddress(&getCurMenuItems()->title));
+        remaining = sizeof(screenShotFileName) - strlen(screenShotFileName) - 1;
+        strncat(screenShotFileName, labelGetAddress(&getCurMenuItems()->title), remaining);
         break;
 
       case MENU_TYPE_LISTVIEW:
-        strcat(screenShotFileName, labelGetAddress(&getCurListItems()->title));
+        remaining = sizeof(screenShotFileName) - strlen(screenShotFileName) - 1;
+        strncat(screenShotFileName, labelGetAddress(&getCurListItems()->title), remaining);
         break;
 
       default:
-        strcat(screenShotFileName, "other");
+        remaining = sizeof(screenShotFileName) - strlen(screenShotFileName) - 1;
+        strncat(screenShotFileName, "other", remaining);
         break;
     }
 
@@ -139,11 +144,12 @@ void loopScreenShot(void)
 
     do
     {
-      sprintf(fileName, "%s_%d.bmp", screenShotFileName, index);
+      snprintf(fileName, sizeof(fileName), "%s_%d.bmp", screenShotFileName, index);
       index++;
     } while (!screenShotBMP(fileName) && index < 10);
 
-    strcat(fileName, (index < 10) ? " ok!" : " failed!");
+    remaining = sizeof(fileName) - strlen(fileName) - 1;
+    strncat(fileName, (index < 10) ? " ok!" : " failed!", remaining);
 
     addToast(DIALOG_TYPE_ALERT, fileName);
   }
