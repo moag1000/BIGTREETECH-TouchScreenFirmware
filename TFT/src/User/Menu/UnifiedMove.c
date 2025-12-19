@@ -61,7 +61,10 @@ void menuUnifiedMove(void)
         break;
 
       case KEY_ICON_3:
-        storeCmd("M84\n");
+        if (isPrinting() && !isPaused())
+          popupReminder(DIALOG_TYPE_ALERT, LABEL_WARNING, LABEL_IS_PAUSE);
+        else
+          storeCmd("M84\n");
         break;
 
       case KEY_ICON_4:

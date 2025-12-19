@@ -62,7 +62,10 @@ void menuManualLeveling(void)
         {
           // unlock XY axis
           case 0:
-            storeCmd("M84 X Y E\n");
+            if (isPrinting() && !isPaused())
+              popupReminder(DIALOG_TYPE_ALERT, LABEL_WARNING, LABEL_IS_PAUSE);
+            else
+              storeCmd("M84 X Y E\n");
             break;
 
           // set level edge distance

@@ -94,7 +94,7 @@ static void setLayerHeightText(char * layer_height_txt)
   if (layer_height > 0)
     sprintf(layer_height_txt, "%6.2fmm", layer_height);
   else
-    strcpy(layer_height_txt, " --- mm ");  // leading and trailing space char so the text is centered on both rows
+    strcpy(layer_height_txt, "  N/A   ");  // not available yet, centered
 }
 
 static void setLayerNumberTxt(char * layer_number_txt)
@@ -119,7 +119,7 @@ static void setLayerNumberTxt(char * layer_number_txt)
   }
   else
   {
-    strcpy(layer_number_txt, "---");
+    strcpy(layer_number_txt, "N/A");
   }
 }
 

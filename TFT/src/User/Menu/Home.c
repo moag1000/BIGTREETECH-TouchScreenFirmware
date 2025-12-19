@@ -17,6 +17,17 @@ static const MENUITEMS homeItems = {
   }
 };
 
+// check if homing is safe (not printing or print is paused)
+static inline bool homingIsSafe(void)
+{
+  if (isPrinting() && !isPaused())
+  {
+    popupReminder(DIALOG_TYPE_ALERT, LABEL_WARNING, LABEL_IS_PAUSE);
+    return false;
+  }
+  return true;
+}
+
 void menuHome(void)
 {
   KEY_VALUES key_num = KEY_IDLE;
@@ -29,12 +40,23 @@ void menuHome(void)
 
     switch (key_num)
     {
-      case KEY_ICON_0: storeCmd("G28\n");   break;
-      case KEY_ICON_1: storeCmd("G28 X\n"); break;
-      case KEY_ICON_2: storeCmd("G28 Y\n"); break;
-      case KEY_ICON_3: storeCmd("G28 Z\n"); break;
-      case KEY_ICON_7: CLOSE_MENU();        break;
-      default:                              break;
+      case KEY_ICON_0:
+        if (homingIsSafe()) storeCmd("G28\n");
+        break;
+      case KEY_ICON_1:
+        if (homingIsSafe()) storeCmd("G28 X\n");
+        break;
+      case KEY_ICON_2:
+        if (homingIsSafe()) storeCmd("G28 Y\n");
+        break;
+      case KEY_ICON_3:
+        if (homingIsSafe()) storeCmd("G28 Z\n");
+        break;
+      case KEY_ICON_7:
+        CLOSE_MENU();
+        break;
+      default:
+        break;
     }
 
     loopProcess();

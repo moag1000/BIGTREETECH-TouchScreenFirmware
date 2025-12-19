@@ -9,6 +9,16 @@ void heatSetCurrentIndex(uint8_t index)
   tool_index = (index == LAST_NOZZLE) ? last_nozzle_index : index;
 }
 
+// cool down all heaters (nozzles + bed + chamber)
+static void cooldownAll(void)
+{
+  for (uint8_t i = 0; i < MAX_HEATER_COUNT; i++)
+  {
+    if (heaterDisplayIsValid(i))
+      heatSetTargetTemp(i, 0, FROM_GUI);
+  }
+}
+
 void menuHeat(void)
 {
   // 1 title, ITEM_PER_PAGE items (icon + label)
@@ -18,7 +28,7 @@ void menuHeat(void)
     // icon                          label
     {
       {ICON_DEC,                     LABEL_DEC},
-      {ICON_NULL,                    LABEL_NULL},
+      {ICON_STOP,                    LABEL_COOLDOWN},  // cool all heaters
       {ICON_NULL,                    LABEL_NULL},
       {ICON_INC,                     LABEL_INC},
       {ICON_NOZZLE,                  LABEL_NOZZLE},
@@ -56,6 +66,10 @@ void menuHeat(void)
       case KEY_ICON_0:
       case KEY_DECREASE:
         setTarget -= degreeSteps[degreeSteps_index];
+        break;
+
+      case KEY_ICON_1:
+        cooldownAll();
         break;
 
       case KEY_INFOBOX:
